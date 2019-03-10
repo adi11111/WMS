@@ -1,0 +1,17 @@
+C:\Projects\GwDealerPortal\GwDealerPortal.Service\bin\Debug\netcoreapp2.0\GwDealerPortal.Service.deps.json
+C:\Projects\GwDealerPortal\GwDealerPortal.Service\bin\Debug\netcoreapp2.0\GwDealerPortal.Service.runtimeconfig.json
+C:\Projects\GwDealerPortal\GwDealerPortal.Service\bin\Debug\netcoreapp2.0\GwDealerPortal.Service.runtimeconfig.dev.json
+C:\Projects\GwDealerPortal\GwDealerPortal.Service\bin\Debug\netcoreapp2.0\GwDealerPortal.Service.dll
+C:\Projects\GwDealerPortal\GwDealerPortal.Service\bin\Debug\netcoreapp2.0\GwDealerPortal.Service.pdb
+C:\Projects\GwDealerPortal\GwDealerPortal.Service\bin\Debug\netcoreapp2.0\GwDealerPortal.DataAccess.dll
+C:\Projects\GwDealerPortal\GwDealerPortal.Service\bin\Debug\netcoreapp2.0\GwDealerPortal.Model.dll
+C:\Projects\GwDealerPortal\GwDealerPortal.Service\bin\Debug\netcoreapp2.0\GwDealerPortal.DataAccess.pdb
+C:\Projects\GwDealerPortal\GwDealerPortal.Service\bin\Debug\netcoreapp2.0\GwDealerPortal.DataAccess.dll.config
+C:\Projects\GwDealerPortal\GwDealerPortal.Service\bin\Debug\netcoreapp2.0\GwDealerPortal.Model.pdb
+C:\Projects\GwDealerPortal\GwDealerPortal.Service\obj\Debug\netcoreapp2.0\GwDealerPortal.Service.csprojAssemblyReference.cache
+C:\Projects\GwDealerPortal\GwDealerPortal.Service\obj\Debug\netcoreapp2.0\GwDealerPortal.Service.csproj.CoreCompileInputs.cache
+C:\Projects\GwDealerPortal\GwDealerPortal.Service\obj\Debug\netcoreapp2.0\GwDealerPortal.Service.AssemblyInfoInputs.cache
+C:\Projects\GwDealerPortal\GwDealerPortal.Service\obj\Debug\netcoreapp2.0\GwDealerPortal.Service.AssemblyInfo.cs
+C:\Projects\GwDealerPortal\GwDealerPortal.Service\obj\Debug\netcoreapp2.0\GwDealerPortal.Service.csproj.CopyComplete
+C:\Projects\GwDealerPortal\GwDealerPortal.Service\obj\Debug\netcoreapp2.0\GwDealerPortal.Service.dll
+C:\Projects\GwDealerPortal\GwDealerPortal.Service\obj\Debug\netcoreapp2.0\GwDealerPortal.Service.pdb

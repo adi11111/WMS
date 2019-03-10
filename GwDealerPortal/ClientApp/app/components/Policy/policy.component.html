@@ -1,0 +1,604 @@
+﻿        <!-- /.login-logo -->
+<div class="login-box-body claim-fields content-wrapper process-claim">
+    <div class="row no-padding">
+        <div class="col-lg-10"><h2>Contract Management</h2></div>
+        <div class="col-lg-2"><a class="pull-right btn btn-success" href="javascript:void(0)" (click)="refreshPage()">Create</a></div>
+    </div>
+    <div>
+        <form class="form-horizontal" (ngSubmit)="addPolicy(policyForm)" #policyForm="ngForm">
+            <!--dealer information-->
+            <fieldset>
+                <legend>Contract Information</legend>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="userNameId">Contract No: <span class="text-danger">(<sub>*</sub>)</span></label>
+                            <div class="col-md-8">
+                                <input class="form-control" id="txtPolicyNumber" type="text" placeholder="Contract Number" [(ngModel)]="policy.PolNumber" value="{{policy.PolicyNo}}" name="policyNumber" #policyNumberVar="ngModel" required disabled />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="issueDate">Issue Date: <span class="text-danger">(<sub>*</sub>)</span></label>
+                            <div class="col-md-8">
+                                <input class="form-control" id="txtIssueDate" type="date" placeholder="Issue Date" [(ngModel)]="policy.IssueDate" name="issueDate" value="{{policy.IssueDate}}" #issueDateVar="ngModel" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group" [ngClass]="{'has-error': (clientRefNumVar.touched || clientRefNumVar.dirty) && !clientRefNumVar.valid }">
+                            <label class="col-md-4 control-label no-padding" for="clientRefNum">Client Ref No: <span class="text-danger">(<sub>*</sub>)</span></label>
+                            <div class="col-md-8">
+                                <input class="form-control" id="txtclientRefNum" type="text" placeholder="Client Ref No" [(ngModel)]="policy.ClientRefNum" name="clientRefNum" value="{{policy.ClientRefNum}}" #clientRefNumVar="ngModel" required maxlength="20" />
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group" [ngClass]="{'has-error': (selectedDealerIDVar.touched || selectedDealerIDVar.dirty) && !selectedDealerIDVar.valid }">
+                            <label class="col-lg-3 control-label">Dealer: <span class="text-danger">(<sub>*</sub>)</span></label>
+                            <div class="col-lg-9">
+                                <select class="form-control" name="dealerID" #selectedDealerIDVar="ngModel" [(ngModel)]="policy.DealerID" required (change)="onSelectChange($event,'DealerName')">
+                                    <option selected="selected" value="undefined">Select Dealer</option>
+                                    <option *ngFor="let c of dropdowns.dealers" value={{c.DealerCode}}>
+                                        {{c.DealerName}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group"
+                             [ngClass]="{'has-error': (selectedBranchCodeVar.touched || selectedBranchCodeVar.dirty) && !selectedBranchCodeVar.valid }">
+                            <label class="col-lg-3 control-label">Branch: <span class="text-danger">(<sub>*</sub>)</span></label>
+                            <div class="col-lg-9">
+                                <select class="form-control" name="claimBranch" #selectedBranchCodeVar="ngModel" [(ngModel)]="policy.BranchID" required>
+                                    <option selected="selected" value="undefined">Select Branch</option>
+                                    <option *ngFor="let b of filterDealer()" [ngValue]="b.DealerBranchID">
+                                        {{b.DealerBranchName}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="premium">Min Premium:  <span class="text-danger">(<sub>*</sub>)</span></label>
+                            <div class="col-md-9">
+                                <input class="form-control" id="txtpremium" type="text" placeholder="Min Premium" [(ngModel)]="policy.MinPremium" name="premium" value="{{policy.MinPremium}}" #premiumVar="ngModel" disabled />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group" [ngClass]="{'has-error': (premiumVar.touched || premiumVar.dirty) && !premiumVar.valid }">
+                            <label class="col-md-3 control-label" for="premium">Premium:  <span class="text-danger">(<sub>*</sub>)</span></label>
+                            <div class="col-md-9">
+                                <input class="form-control" id="txtpremium" type="text" placeholder="Premium" [(ngModel)]="policy.Premium" name="premium" value="{{policy.Premium}}" #premiumVar="ngModel" required [min]="policy.MinPremium" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <fieldset>
+                            <legend>Uploaded Documents</legend>
+                            <div class="form-group"
+                                 [ngClass]="{'has-error': (documentVar.touched || documentVar.dirty) && !documentVar.valid }">
+                                <label class="col-md-3 control-label" for="document">Select File:  <span class="text-danger">(<sub>*</sub>)</span></label>
+                                <div class="col-md-2">
+                                    <input class="form-control" id="txtDocument" type="file" placeholder="Document" [(ngModel)]="policy.document" name="document"
+                                           #documentVar="ngModel" (change)="addFiles($event.target.files)" multiple />
+                                </div>
+                                <span class="col-md-2" [ngClass]="{'hidden': files.length == 0}">
+                                    <a class="btn btn-danger" (click)="clearFiles()">Clear</a>
+                                </span>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="documents" [ngClass]="{'hidden': files.length == 0 }">
+                            <h2>Added Documents</h2>
+                            <ol>
+                                <li *ngFor="let file of files">
+                                    <span>
+                                        <a href="{{commonService.config.policyFormPath}}\{{file.name}}" target="_blank">{{file.name}} </a>
+                                        <span (click)="deleteFile(file.name,index,$event)" class=" fa fa-close"></span>
+                                    </span>
+                                </li>
+                            </ol>
+                        </div>
+
+                    </div>
+                </div>
+            </fieldset>
+            <!--customer information-->
+            <fieldset>
+                <legend> Customer Information</legend>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group" [ngClass]="{'has-error': (customerNameVar.touched || customerNameVar.dirty) && !customerNameVar.valid }">
+                            <label class="col-md-3 control-label" for="dealerName">Customer Name:  <span class="text-danger">(<sub>*</sub>)</span></label>
+                            <div class="col-md-9">
+                                <input class="form-control" id="txtCustomerName" type="text" placeholder="Customer Name" [(ngModel)]="policy.CustomerName" name="customerName" value="{{policy.CustomerName}}" #customerNameVar="ngModel" required maxlength="100" />
+                            </div>
+                        </div>
+                        <div class="form-group"
+                             [ngClass]="{'has-error': (mobileNoVar.touched || mobileNoVar.dirty) && !mobileNoVar.valid }">
+                            <label class="col-md-3 control-label" for="mobileNo">Mobile No:  <span class="text-danger">(<sub>*</sub>)</span></label>
+                            <div class="col-md-9">
+                                <input class="form-control" id="txtMobileNo" type="text" placeholder="Mobile No" [(ngModel)]="policy.MobileNum" name="mobileNo"
+                                       #mobileNoVar="ngModel" required  maxlength="20" />
+                                <!--<span class="help-block" *ngIf="(userNameVar.touched || userNameVar.dirty) && userNameVar.errors">
+                            <span *ngIf="userNameVar.errors.required">User name is required. </span>
+                        </span>-->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group"  [ngClass]="{'has-error': (emailVar.touched || emailVar.dirty) && !emailVar.valid }">
+                            <label class="col-md-3 control-label" for="email">Email:   <span class="text-danger">(<sub>*</sub>)</span></label>
+                            <div class="col-md-9">
+                                <input class="form-control" id="txtEmail" type="text" placeholder="Email" [(ngModel)]="policy.Email" name="email" value="{{policy.Email}}" #emailVar="ngModel" required  maxlength="50" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="city">City :</label>
+                            <div class="col-md-9">
+                                <input class="form-control" id="txtCity" type="text" placeholder="City" [(ngModel)]="policy.City" name="city" value="{{policy.City}}" #cityVar="ngModel" maxlength="20" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="col-md-1 control-label " style="width:12.499999995%" for="address">Address :</label>
+                            <div class="col-md-10" style="width:87.5%">
+                                <textarea class="form-control" id="txtAddress" type="text" placeholder="Address" [(ngModel)]="policy.Address" name="address" value="{{policy.Address}}" #addressVar="ngModel"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </fieldset>
+            <!--policy information-->
+            <fieldset>
+                <legend> Contract Information</legend>
+
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="form-group"
+                             [ngClass]="{'has-error': (selectedProductGroupVar.touched || selectedProductGroupVar.dirty) && !selectedProductGroupVar.valid }">
+                            <label class="col-lg-3 no-padding text-right">Product Group:  <span class="text-danger">(<sub>*</sub>)</span></label>
+                            <div class="col-lg-9">
+                                <select class="form-control" name="productGroupID" #selectedProductGroupVar="ngModel" [(ngModel)]="policy.ProductGroupId" required (change)="onSelectChange($event,'ProductGroup');onProductGroupChange();">
+                                    <option selected="selected" value="undefined">Select Product Group</option>
+                                    <option *ngFor="let c of dropdowns.productGroups" value={{c.ProductGroupCode}}>
+                                        {{c.ProductGroupName}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group"
+                             [ngClass]="{'has-error': (selectedProductSubGroupVar.touched || selectedProductSubGroupVar.dirty) && !selectedProductSubGroupVar.valid }">
+                            <label class="col-lg-3 no-padding text-right">Product Sub Group:  <span class="text-danger">(<sub>*</sub>)</span></label>
+                            <div class="col-lg-9">
+                                <select class="form-control" name="productSubGroupID" #selectedProductSubGroupVar="ngModel" [(ngModel)]="policy.ProductSubGroupId" required (change)="onProductSubGroupChange();onSelectChange($event,'ProductSubGroupName')">
+                                    <option selected="selected" value="undefined">Select Product Sub Group</option>
+                                    <option *ngFor="let c of productSubGroups " value={{c.SubGroupCode}}>
+                                        {{c.SubGroupName}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group" [ngClass]="{'has-error': (soldDateVar.touched || soldDateVar.dirty) && !soldDateVar.valid }">
+                            <label class="col-md-3 control-label" for="SoldDate">Sold Date:  <span class="text-danger">(<sub>*</sub>)</span></label>
+                            <div class="col-md-9">
+                                <input class="form-control" id="txtSoldDate" type="date" placeholder="Sold Date" [(ngModel)]="policy.SoldDate" name="soldDate" value="{{policy.SoldDate}}" #soldDateVar="ngModel" (change)="calculateDuration()" required />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="form-group"
+                             [ngClass]="{'has-error': (selectedManuDurationVar.touched || selectedManuDurationVar.dirty) && !selectedManuDurationVar.valid }">
+                            <label class="col-lg-3 no-padding text-right">Manufacturer's Assistance Duration: <span class="text-danger">(<sub>*</sub>)</span></label>
+                            <div class="col-lg-9">
+                                <select class="form-control" name="manuDuration" #selectedManuDurationVar="ngModel" [(ngModel)]="policy.ManuDuration" required (change)="calculateDuration()">
+                                    <option selected="selected" value="undefined">Select Manufacturer Assistance Duration</option>
+                                    <option value="0">0</option>
+                                    <option value="12">12</option>
+                                    <option value="24">24</option>
+                                    <option value="36">36</option>
+                                    <option value="48">48</option>
+                                    <option value="60">60</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group" [ngClass]="{'has-error': (selectedExtDurationVar.touched || selectedExtDurationVar.dirty) && !selectedExtDurationVar.valid }">
+                            <label class="col-lg-3 no-padding text-right">Extended Assistance Duration:  <span class="text-danger">(<sub>*</sub>)</span></label>
+                            <div class="col-lg-9">
+                                <select class="form-control" name="extDuration" #selectedExtDurationVar="ngModel" [(ngModel)]="policy.ExtDurationID" required (change)="calculateDuration()">
+                                    <option selected="selected" value="undefined">Select Extended Assistance Duration</option>
+                                    <option *ngFor="let c of filterExtDuration() " value={{c.DurationID}}>
+                                        {{c.DurationName}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group"
+                             [ngClass]="{'has-error': (selectedManuCutoffVar.touched || selectedManuCutoffVar.dirty) && !selectedManuCutoffVar.valid }">
+                            <label class="col-lg-4 no-padding text-right">Manufacturer's Assistance Mileage Cutoff:  <span class="text-danger">(<sub>*</sub>)</span></label>
+                            <div class="col-lg-8">
+                                <select class="form-control" name="manuCutoff" #selectedManuCutoffVar="ngModel" [(ngModel)]="policy.ManuCutoff" required (change)="calculateDuration()">
+                                    <option value="undefined">Select Manufacturer Assistance Mileage Cutoff</option>
+                                    <option selected="selected" value="0">0</option>
+                                    <option value="10000">10000</option>
+                                    <option value="20000">20000</option>
+                                    <option value="20000">25000</option>
+                                    <option value="40000">40000</option>
+                                    <option value="50000">50000</option>
+                                    <option value="60000">60000</option>
+                                    <option value="100000">100000</option>
+                                    <option value="150000">150000</option>
+                                    <option value="200000">200000</option>
+                                    <option value="999999">999999</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group"
+                             [ngClass]="{'has-error': (selectedExtCutoffVar.touched || selectedExtCutoffVar.dirty) && !selectedExtCutoffVar.valid }">
+                            <label class="col-lg-4 no-padding text-right">Extended Assistance Mileage Cutoff:  <span class="text-danger">(<sub>*</sub>)</span></label>
+                            <div class="col-lg-8">
+                                <select class="form-control" name="extCutoff" #selectedExtCutoffVar="ngModel" [(ngModel)]="policy.ExtCutoff" required>
+                                    <option value="undefined">Select Extfacturer Assistance Mileage Cutoff</option>
+                                    <option value="0">0</option>
+                                    <option selected="selected" value="10000">10000</option>
+                                    <option value="20000">20000</option>
+                                    <option value="20000">25000</option>
+                                    <option value="40000">40000</option>
+                                    <option value="50000">50000</option>
+                                    <option value="60000">60000</option>
+                                    <option value="100000">100000</option>
+                                    <option value="150000">150000</option>
+                                    <option value="200000">200000</option>
+                                    <option value="999999">999999</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label " for="address">Remarks :</label>
+                            <div class="col-md-9">
+                                <textarea class="form-control" id="txtRemarks" type="text" rows="4" placeholder="Remarks" [(ngModel)]="policy.Remarks" name="remarks" value="{{policy.Remarks}}" #remarksVar="ngModel"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label no-padding" for="extendedWarrantyStartDate">Extended Assistance Start Date</label>
+                            <div class="col-md-9">
+                                <input class="form-control" id="txtExtendedWarrantyStartDate" type="date" placeholder="Extended Assistance Start Date" [(ngModel)]="policy.StartDate" value="{{policy.StartDate}}" name="extendedWarrantyStartDate" #extendedWarrantyStartDateVar="ngModel" disabled  />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label no-padding" for="extendedWarrantyExpiryDate">Extended Assistance Expiry Date:</label>
+                            <div class="col-md-8">
+                                <input class="form-control" id="txtExtendedWarrantyExpiryDate" type="date" placeholder="Extended Assistance Expiry Date" [(ngModel)]="policy.ExpiryDate" name="extendedWarrantyExpiryDate" value="{{policy.ExpiryDate}}" #extendedWarrantyExpiryDateVar="ngModel" disabled />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label no-padding" for="manufacturerWarrantyExpiryDate">Manufacturer Assistance Expiry Date:</label>
+                            <div class="col-md-8">
+                                <input class="form-control" id="txtManufacturerWarrantyExpiryDate" type="date" placeholder="Manufacturer Assistance Expiry Date" [(ngModel)]="policy.ManuExpiryDate" name="manufacturerWarrantyExpiryDate" value="{{policy.ManuExpiryDate}}" #manufacturerWarrantyExpiryDateVar="ngModel" disabled />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="form-group" [ngClass]="{'has-error': (limitPerClaimVar.touched || limitPerClaimVar.dirty) && !limitPerClaimVar.valid }">
+                            <label class="col-md-3 control-label text-right no-padding" for="limitPerClaim">Limit Per Claim :</label>
+                            <div class="col-md-9">
+                                <select class="form-control" name="claimLimit" #limitPerClaimVar="ngModel" [(ngModel)]="policy.ClaimLimit" required>
+                                    <option selected="selected" value="undefined">Select Limit Per Claim</option>
+                                    <option *ngFor="let c of filterClaimLimit()" value={{c}}>
+                                        {{c}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group" [ngClass]="{'has-error': (refNumberVar.touched || refNumberVar.dirty) && !refNumberVar.valid , hidden :policy.Status != 0  }">
+                            <label class="col-md-3 control-label text-right no-padding" for="refNumber">Reference Number:  <span class="text-danger">(<sub>*</sub>)</span></label>
+                            <div class="col-md-9">
+                                <input class="form-control" id="txtRefNumber" type="text" placeholder="RefNumber" [(ngModel)]="policy.RefNumber" name="refNumber" value="{{policy.RefNumber}}" #refNumberVar="ngModel" [required]="policy.Status == 0" maxlength="50" />
+                            </div>
+                        </div>
+                        <fieldset>
+                            <legend>Other Services Information</legend>
+                            <div class="dropdown dropdown-scroll">
+
+                                <button class="btn btn-default border-left-zero dropdown-toggle col-lg-12" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="false">
+                                    <span id="OtherServiceName">Select Other Service</span>
+                                    <span class="float-right">
+                                        <span class="caret"></span>
+                                    </span>
+                                </button>
+                                <ul class="dropdown-menu col-lg-12 multiple" id="drpOtherService" role="menu" aria-labelledby="dropdownMenu1">
+                                    <li role="presentation">
+                                        <div class="input-group input-group-sm search-control">
+                                            <span class="input-group-addon">
+                                                <span class="glyphicon glyphicon-search"></span>
+                                            </span>
+                                            <input type="text" class="form-control" placeholder="Other Service">
+                                        </div>
+                                    </li>
+                                    <li *ngFor="let c of dropdowns.otherService" id="{{c.OtherServiceID}}">
+                                        <a href="javascript:void(0)" (click)="toggleItem('OtherService',c, $event); $event.preventDefault()">
+                                            <div class="icheckbox_flat-blue checkbox-container">
+                                                <input type="checkbox" [checked]="checkElement(c)" class="flat">
+                                                <span class="checkmark"></span>
+                                            </div>
+                                            {{c.OtherServiceName}}
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group"
+                             [ngClass]="{'has-error': (selectedStatusVar.touched || selectedStatusVar.dirty) && !selectedStatusVar.valid }">
+                            <label class="col-lg-3 no-padding text-right">Status:  <span class="text-danger">(<sub>*</sub>)</span></label>
+                            <div class="col-lg-9">
+                                <select class="form-control" name="status" #selectedStatusVar="ngModel" [(ngModel)]="policy.Status" required>
+                                    <option selected="selected" value="undefined">Select Status</option>
+                                    <option *ngFor="let s of dropdowns.statuss" value={{s.id}}>
+                                        {{s.name}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group" [ngClass]="{'has-error': (approvalDate.touched || approvalDate.dirty) && !approvalDate.valid , hidden :policy.Status != 0  }">
+                            <label class="col-md-3 control-label text-right no-padding" for="approvalDate">Approval Date:  <span class="text-danger">(<sub>*</sub>)</span></label>
+                            <div class="col-md-9">
+                                <input class="form-control" id="txtApprovalDate" type="date" placeholder="Approval Date" [(ngModel)]="policy.ApprovalDate" name="approvalDate" value="{{policy.ApprovalDate}}" #approvalDate="ngModel" [required]="policy.Status == 0" />
+                            </div>
+                        </div>
+                        <div class="col-lg-12 text-center tag-list">
+                            <ul id="lstService" class="tags">
+                                <li *ngFor="let c of otherServices"><span (click)="removeElement(c)">X</span>{{c.OtherServiceName}}</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group" [ngClass]="{'has-error': (soldByVar.touched || soldByVar.dirty) && !soldByVar.valid }">
+                            <label class="col-md-4 control-label no-padding" for="soldBy">Sold By:  <span class="text-danger">(<sub>*</sub>)</span></label>
+                            <div class="col-md-8">
+                                <input class="form-control" id="txtSoldBy" type="text" placeholder="Sold By" [(ngModel)]="policy.SoldBy" name="soldBy" value="{{policy.SoldBy}}" #soldByVar="ngModel" required maxlength="50" />
+                            </div>
+                        </div>
+                        <div class="form-group" [ngClass]="{'has-error': (descriptionVar.touched || descriptionVar.dirty) && !descriptionVar.valid , hidden :policy.Status != 0  }">
+                            <label class="col-md-3 control-label " for="description">Description:  <span class="text-danger">(<sub>*</sub>)</span></label>
+                            <div class="col-md-9">
+                                <textarea class="form-control" id="txtDescription" type="text" rows="4" placeholder="Description" [(ngModel)]="policy.Description" name="description" value="{{policy.Description}}" #descriptionVar="ngModel" [required]="policy.Status == 0"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+            <!--vehicle information-->
+
+            <fieldset>
+                <legend>Vehicle Information</legend>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="form-group"
+                             [ngClass]="{'has-error': (selectedMakeIDVar.touched || selectedMakeIDVar.dirty) && !selectedMakeIDVar.valid }">
+                            <label class="col-lg-3 no-padding text-right">Make:  <span class="text-danger">(<sub>*</sub>)</span></label>
+                            <div class="col-lg-9">
+                                <select class="form-control" name="make" #selectedMakeIDVar="ngModel" [(ngModel)]="policy.MakeId" required>
+                                    <option selected="selected" value="undefined">Select Make</option>
+                                    <option *ngFor="let m of filterMake()" value={{m.MakeID}}>
+                                        {{m.MakeName}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group"
+                             [ngClass]="{'has-error': (selectedModelIDVar.touched || selectedModelIDVar.dirty) && !selectedModelIDVar.valid }">
+                            <label class="col-lg-3 no-padding text-right">Model:  <span class="text-danger">(<sub>*</sub>)</span></label>
+                            <div class="col-lg-9">
+                                <select class="form-control" name="model" #selectedModelIDVar="ngModel" [(ngModel)]="policy.ModelId" required>
+                                    <option selected="selected" value="undefined">Select Model</option>
+                                    <option *ngFor="let m of filterModel()" value={{m.ModelID}}>
+                                        {{m.ModelName}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group"
+                             [ngClass]="{'has-error': (selectedModelYearIDVar.touched || selectedModelYearIDVar.dirty) && !selectedModelYearIDVar.valid }">
+                            <label class="col-lg-3 no-padding text-right">Model Year: <span class="text-danger">(<sub>*</sub>)</span> </label>
+                            <div class="col-lg-9">
+                                <select class="form-control" name="modelYear" #selectedModelYearIDVar="ngModel" [(ngModel)]="policy.ModelYearId" required>
+                                    <option selected="selected" value="undefined">Select Model Year</option>
+                                    <option *ngFor="let m of modelYears" value={{m.ModelYearID}}>
+                                        {{m.ModelYearName}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="form-group"
+                             [ngClass]="{'has-error': (selectedCategoryIDVar.touched || selectedCategoryIDVar.dirty) && !selectedCategoryIDVar.valid }">
+                            <label class="col-lg-3 no-padding text-right">Category:  <span class="text-danger">(<sub>*</sub>)</span></label>
+                            <div class="col-lg-9">
+                                <select class="form-control" name="category" #selectedCategoryIDVar="ngModel" [(ngModel)]="policy.CategoryId" required>
+                                    <option selected="selected" value="undefined">Select Category</option>
+                                    <option *ngFor="let m of dropdowns.categories" value={{m.CategoryID}}>
+                                        {{m.CategoryName}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group" [ngClass]="{'has-error': (selectedCCRangeVar.touched || selectedCCRangeVar.dirty) && !selectedCCRangeVar.valid }">
+                            <label class="col-lg-3 no-padding text-right">CC Range: <span class="text-danger">(<sub>*</sub>)</span> </label>
+                            <div class="col-lg-9">
+                                <select class="form-control" name="cCRange" #selectedCCRangeVar="ngModel" [(ngModel)]="policy.CCRangeId" required>
+                                    <option selected="selected" value="undefined">Select CC Range</option>
+                                    <option *ngFor="let c of dropdowns.ccRanges" value={{c.CCRangeID}}>
+                                        {{c.CCRangeName}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="form-group" [ngClass]="{'has-error': (cCVar.touched || cCVar.dirty) && !cCVar.valid }">
+                            <label class="col-md-3 control-label no-padding text-right" for="cC">Cubic Capacity: <span class="text-danger">(<sub>*</sub>)</span> </label>
+                            <div class="col-md-9">
+                                <input class="form-control" id="txtCC " type="number" placeholder="Cubic Capacity" [(ngModel)]="policy.CC" name="cc" value="{{policy.CC}}"
+                                       #cCVar="ngModel" required (blur)="onBlurCC()" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label class="col-lg-3 no-padding text-right">Registration No : </label>
+                            <div class="col-md-9">
+                                <input class="form-control" id="txtRegistrationNo" type="text" placeholder="Registration No" [(ngModel)]="policy.RegNumber" name="registrationNo" value="{{policy.RegistrationNo}}"
+                                       #registrationNoVar="ngModel" />
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label no-padding text-right" for="cC">Registration Date : </label>
+                            <div class="col-md-9">
+                                <input class="form-control" id="txtRegistrationDate " type="date" placeholder="Registration Date" [(ngModel)]="policy.RegDate" name="registrationDate" value="{{policy.RegistrationDate}}"
+                                       #registrationDateVar="ngModel" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group" [ngClass]="{'has-error': (chassisNoVar.touched || chassisNoVar.dirty) && !chassisNoVar.valid }">
+                            <label class="col-md-3 control-label no-padding text-right" for="chassisNo">VI/Chassis No: <span class="text-danger">(<sub>*</sub>)</span></label>
+                            <div class="col-md-9">
+                                <input class="form-control" id="txtChassisNo" type="text" placeholder="VI/Chassis No" (blur)="checkChasisNoLength()" [(ngModel)]="policy.UINumber" name="chassisNo" value="{{policy.UINumber}}"
+                                       #chassisNoVar="ngModel" required maxlength="25" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label no-padding text-right" for="productPrice">Product Price : </label>
+                            <div class="col-md-9">
+                                <input class="form-control" id="txtProductPrice " type="number" placeholder="Product Price" [(ngModel)]="policy.ProductPrice" name="productPrice" value="{{policy.ProductPrice}}"
+                                       #productPriceVar="ngModel" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group" [ngClass]="{'has-error': (currentMileageVar.touched || currentMileageVar.dirty) && !currentMileageVar.valid }">
+                            <label class="col-md-3 control-labe no-padding text-right" for="currentMileage">Current Mileage: <span class="text-danger">(<sub>*</sub>)</span></label>
+                            <div class="col-md-9">
+                                <input class="form-control" id="txtCurrentMileage" type="number" placeholder="Current Mileage" [(ngModel)]="policy.CurrentMileage" name="currentMileage" max="{{EntryMillage}}" value="{{policy.CurrentMileage}}" (blur)="checkAllowedMillage()" #currentMileageVar="ngModel" required />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label no-padding text-right" for="chassisNo">Plate Type :</label>
+                            <div class="col-md-9">
+                                <input class="form-control" id="txtPlateType" type="text" placeholder="Plate Type" [(ngModel)]="policy.PlateType" name="plateType" value="{{policy.PlateType}}"
+                                       #plateTypeVar="ngModel" maxlength="50" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+
+            <!--other service information-->
+            <br />
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="icheckbox_flat-blue checkbox-container" style="display: inline-block;"><input name="termsAndConditions" [(ngModel)]="TermsAndConditions" type="checkbox" id="" class="flat" style="left: 0px;height: 20px;width:20px;top:-4px;z-index: 2;" /><span class="checkmark"></span></div>
+                    <a href="javascript:void(0);" (click)="showTermsAndConditions()"> I certify that there are no pre-existing faults & the vehicle is mechanically/ electrically sound &  of road worthy condition. The terms & condition/ coverage is read & understood by me & the same has been explained to the customer. </a>
+                    <br />   <br />
+                    <div [ngClass]="{'hidden': isNewVehicleProductGroup == false }">
+                        <div class="icheckbox_flat-blue checkbox-container" style="display: inline-block;"><input name="termsAndConditions2" [(ngModel)]="TermsAndConditions2" type="checkbox" id="" class="flat" style="left: 0px;height: 20px;width:20px;top:-4px;z-index: 2;" /><span class="checkmark"></span></div>
+                        <a href="javascript:void(0);"> After 3 years/100,000km the coverage will be as per the 4-star policy's terms and conditions (Engine,Transmission, and differential), After 5/150,000km the coverage will be as per the 3-star policy's terms and conditions (Engine and Transmission)    </a>
+                    </div>
+                    
+                </div>
+            </div>
+            <br />
+            <span>
+                <input type="button" id="btnSubmit" class="btn btn-success" onclick="$('#mdlAddPolicy').modal('show')" value="Submit" [ngClass]="{'hidden' : isEdit == false || TermsAndConditions == false || TermsAndConditions == undefined || ((TermsAndConditions2 == undefined  || TermsAndConditions2 == false) && isNewVehicleProductGroup == true)}" />
+                <input type="button" [ngClass]="{'hidden': policy.SINum == undefined || isPrint == false }" class="btn btn-primary" name="print" (click)="showReport('PC82_')" value="Print" />
+                <input type="button" [ngClass]="{'hidden': isEmail == false  }" class="btn btn-primary" name="print" (click)="sendEmail()" value="Send Email" />
+            </span>
+            <!-- Modal -->
+            <div id="mdlAddPolicy" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Confirm Addition</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p>Are you sure you want to Save Contract</p>
+                        </div>
+                        <div class="modal-footer">
+                            <input type="submit" class="btn btn-success" value="Ok" />
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </form>
+    </div>
+    <!--<div class="has-error" *ngIf="errorMessage">{{errorMessage}}</div>-->
+</div>

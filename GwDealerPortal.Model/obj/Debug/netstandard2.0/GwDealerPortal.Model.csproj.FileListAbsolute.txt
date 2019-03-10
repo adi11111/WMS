@@ -1,0 +1,14 @@
+C:\Projects\GwDealerPortal\GwDealerPortal.Model\bin\Debug\netstandard2.0\GwDealerPortal.Model.deps.json
+C:\Projects\GwDealerPortal\GwDealerPortal.Model\bin\Debug\netstandard2.0\GwDealerPortal.Model.dll
+C:\Projects\GwDealerPortal\GwDealerPortal.Model\bin\Debug\netstandard2.0\GwDealerPortal.Model.pdb
+C:\Projects\GwDealerPortal\GwDealerPortal.Model\bin\Debug\netstandard2.0\Microsoft.AspNetCore.Http.Features.dll
+C:\Projects\GwDealerPortal\GwDealerPortal.Model\bin\Debug\netstandard2.0\System.ComponentModel.Annotations.dll
+C:\Projects\GwDealerPortal\GwDealerPortal.Model\bin\Debug\netstandard2.0\Microsoft.AspNetCore.Http.Features.xml
+C:\Projects\GwDealerPortal\GwDealerPortal.Model\bin\Debug\netstandard2.0\System.ComponentModel.Annotations.xml
+C:\Projects\GwDealerPortal\GwDealerPortal.Model\obj\Debug\netstandard2.0\GwDealerPortal.Model.csproj.CoreCompileInputs.cache
+C:\Projects\GwDealerPortal\GwDealerPortal.Model\obj\Debug\netstandard2.0\GwDealerPortal.Model.AssemblyInfoInputs.cache
+C:\Projects\GwDealerPortal\GwDealerPortal.Model\obj\Debug\netstandard2.0\GwDealerPortal.Model.AssemblyInfo.cs
+C:\Projects\GwDealerPortal\GwDealerPortal.Model\obj\Debug\netstandard2.0\GwDealerPortal.Model.csproj.CopyComplete
+C:\Projects\GwDealerPortal\GwDealerPortal.Model\obj\Debug\netstandard2.0\GwDealerPortal.Model.dll
+C:\Projects\GwDealerPortal\GwDealerPortal.Model\obj\Debug\netstandard2.0\GwDealerPortal.Model.pdb
+C:\Projects\GwDealerPortal\GwDealerPortal.Model\obj\Debug\netstandard2.0\GwDealerPortal.Model.csprojAssemblyReference.cache

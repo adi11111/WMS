@@ -1,0 +1,253 @@
+<div class="login-box-body content-wrapper"  [ngClass]="{'hidden': !isRole }">
+    <div class="row">
+        <form class="form-horizontal" (ngSubmit)="addRole(addRoleForm)" #addRoleForm="ngForm">
+            <!--role information-->
+            <fieldset>
+                <legend>Role Information</legend>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="roleName">Role Name</label>
+                            <div class="col-md-9">
+                                <input class="form-control" id="txtRoleName" type="text" placeholder="Role Name" [(ngModel)]="role.RoleName" value="{{role.RoleName}}" name="roleName"
+                                        #roleNameVar="ngModel" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="roleRemarks">Remarks </label>
+                            <div class="col-md-9">
+                                <textarea class="form-control" id="txtRoleRemarks" type="text" placeholder="Remarks" [(ngModel)]="role.Remarks" name="RoleRemarks" value="{{role.Remarks}}" #roleRemarksVar="ngModel"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <button class="btn btn-success" type="submit">Create</button>
+                        <button class="btn btn-success" [ngClass]="{'hidden': !isEditRole }" type="submit">Update</button>
+                    </div>
+                </div>
+
+            </fieldset>
+        </form>
+    </div>
+    <div [ngClass]="{'hidden': !(roles.length > 0) }" class="row">
+        <div class="col-lg-12">
+            <div class="table-responsive">
+                <input type="hidden" id="hdnRoleID" value="{{role.RoleID}}" [(ngModel)]="role.RoleID" />
+                <input type="button" class="hide_column" id="btnEditRole" (click)="editRole()" />
+                <input type="button" class="hide_column" id="btnDeleteRole" (click)="deleteRole()" />
+                <table id="tblRole" class="table  table-bordered table-responsive  jambo_table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Action</th>
+                            <th>Role Name</th>
+                            <th>Remarks</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+    </div>
+
+<div class="login-box-body content-wrapper" [ngClass]="{'hidden': !isInterface }">
+    <div class="row">
+        <form class="form-horizontal" (ngSubmit)="addInterface(addInterfaceForm)" #addInterfaceForm="ngForm">
+            <!--role information-->
+            <fieldset>
+                <legend>Interface Information</legend>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="interfaceName">Interface Name</label>
+                            <div class="col-md-9">
+                                <input class="form-control" id="txtInterfaceName" type="text" placeholder="InterfaceName" [(ngModel)]="interface.InterfaceName" value="{{interface.InterfaceName}}" name="interfaceName"
+                                       #interfaceNameVar="ngModel" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="interfaceName">Parent Interface Name</label>
+                            <div class="col-md-9">
+                                <select class="form-control" name="parentInterface" #selectedParentInterfaceIDVar="ngModel" [(ngModel)]="interface.ParentInterfaceID">
+                                    <option selected="selected" value="0">Select Parent Interface</option>
+                                    <option *ngFor="let interface of interfaces" value="{{interface.interfaceID}}">
+                                        {{interface.interfaceName}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="buttons">
+                            <button class="btn btn-success" type="submit">Create</button>
+                            <button class="btn btn-success" [ngClass]="{'hidden': !isEditInterface }" type="submit">Update</button>
+                        </div>
+                        
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="roleRemarks">Remarks </label>
+                            <div class="col-md-9">
+                                <textarea class="form-control" id="txtInterfaceRemarks" type="text" placeholder="Remarks" [(ngModel)]="interface.Remarks" name="interfaceRemarks" value="{{interface.Remarks}}" #interfaceRemarksVar="ngModel" ></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </fieldset>
+
+        </form>
+    </div>
+    <div [ngClass]="{'hidden': !(interfaces.length > 0) }" class="row">
+        <input type="hidden" id="hdnInterfaceID" value="{{interface.InterfaceID}}" [(ngModel)]="interface.InterfaceID"  />
+        <input type="button" class="hide_column" id="btnEditInterface"(click)="editInterface()" />
+        <input type="button" class="hide_column" id="btnDeleteInterface" (click)="deleteInterface()" />
+        <div class="col-lg-12">
+            <div class="table-responsive">
+                <table id="tblInterface" class="table  table-bordered  jambo_table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Action</th>
+                            <th class="hidden">Interface ID</th>
+                            <th>Interface Name</th>
+                            <th>Parent Interface Name</th>
+                            <th>Remarks</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="login-box-body content-wrapper" [ngClass]="{'hidden': !isAccess }">
+    <div class="clearfix"></div>
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2>User Access <small>Management</small></h2>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-3">
+                        <select class="form-control" name="eventRoleID" (change)="setUserAccessByRole()" #selectedEventRoleIDVar="ngModel" [(ngModel)]="role.RoleID">
+                            <option selected="selected" value="0">Select Role</option>
+                            <option *ngFor="let role of roles" value="{{role.userRoleID}}">
+                                {{role.userRoleName}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-lg-9">
+                        <input type="button" class="form-control btn-success btn btn-sm" style="width: 150px;float: right;margin-bottom:10px;" value="Update" (click)="updateUserAccess()" />
+                    </div>
+                </div>
+                <input type="button" id="btnSwitchChecked" class="hidden" (click)="CheckboxChecked()" />
+                <div class="table-responsive col-lg-12">
+                    <table id="tblUserAccess" class="table table-striped table-bordered table-responsive  jambo_table">
+                        <thead>
+                            <tr>
+                                <th>InterfaceID</th>
+                                <th>Parent</th>
+                                <th>Interface</th>
+                                <th (click)="switchChecked('chkAllowAddAll')">
+                                    <div class="icheckbox_flat-blue checkbox-container" ><input  type="checkbox" id="chkAllowAddAll" class="flat" /> <span class="checkmark"></span></div> Allow Add
+                                </th>
+                                <th (click)="switchChecked('chkAllowEditAll')">
+                                    <div class="icheckbox_flat-blue checkbox-container" ><input  type="checkbox" id="chkAllowEditAll" class="flat" /> <span class="checkmark"></span></div> Allow Edit
+                                </th>
+                                <th (click)="switchChecked('chkAllowDeleteAll')">
+                                    <div class="icheckbox_flat-blue checkbox-container" ><input type="checkbox" id="chkAllowDeleteAll" class="flat" /><span class="checkmark"></span></div> Allow Delete
+                                </th>
+                                <th (click)="switchChecked('chkAllowViewAll')">
+                                    <div class="icheckbox_flat-blue checkbox-container" ><input type="checkbox" id="chkAllowViewAll" class="flat" /><span class="checkmark"></span></div> Allow View
+                                </th>
+                                <th (click)="switchChecked('chkAllowReportAll')">
+                                    <div class="icheckbox_flat-blue checkbox-container" ><input type="checkbox" id="chkAllowReportAll" class="flat" /><span class="checkmark"></span></div> Allow Report
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    </div>
+
+<div class="login-box-body content-wrapper" [ngClass]="{'hidden': !isFilter }">
+    <div class="clearfix"></div>
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2>User Filter <small>Management</small></h2>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-3">
+                        <select class="form-control" name="userID" #selectedUserIDVar="ngModel" (change)="loadUserFilters()" [(ngModel)]="user.UserID">
+                            <option selected="selected" value="0">Select User</option>
+                            <option *ngFor="let user of users" value="{{user.UserCode}}">
+                                {{user.UserName}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-lg-3">
+                        <select class="form-control" name="filterTypeID" #selectedFilterTypeIDVar="ngModel" (change)="loadUserFilters();" [(ngModel)]="filterType.FilterTypeID">
+                            <option selected="selected" value="0">Select Filter Type</option>
+                            <option *ngFor="let filterType of filterTypes" value="{{filterType.filterTypeID}}" >
+                                {{filterType.filterTypeName}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-lg-6">
+                        <input type="button" class="form-control btn-success btn btn-sm" style="width: 150px;float: right;margin-bottom:10px;" value="Save" (click)="updateFilter();" />
+                    </div>
+                </div>
+                <input type="button" id="btnSwitchCheckedFilter" class="hidden" (click)="setFilterCheckbox()" />
+                <div class="table-responsive col-lg-12" [ngClass]="{'hidden': !(filters.length > 0) }">
+                    <table id="tblUserFilter" class="table table-striped table-bordered table-responsive  jambo_table">
+                        <thead>
+                            <tr>
+                                <th class="hidden">Filter ID</th>
+                                <th>
+                                    <div class="icheckbox_flat-blue checkbox-container"><input (click)="switchCheckedFilter('chkAllowAll')" type="checkbox" id="chkAllowAll" class="flat" /> <ins class="iCheck-helper"></ins></div> 
+                                </th>
+                               <th>Allow Access</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!--<tr *ngFor="let filter of filters"  >
+                                <td class="hidden">{{filter.FilterTypeValue}} </td>
+                                <td><input (click)="setFilterCheckbox(filter)" type="checkbox" class="flat" /></td>
+                                <td>{{filter.FilterName}} </td>
+                                
+                            </tr>-->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+    <!-- Modal -->
+    <div id="mdlEdit" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Confirm Update</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to update</p>
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" class="btn btn-success" value="Ok" />
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+
+        </div>
+    </div>

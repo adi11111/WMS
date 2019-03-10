@@ -1,0 +1,659 @@
+﻿        <!-- /.login-logo -->
+    <div class="login-box-body claim-fields content-wrapper process-claim">
+        <h2>Claim Management</h2>
+        <div class="row" [ngClass]="{'hidden': newClaim }">
+            <form class="form-horizontal" novalidate (ngSubmit)="searchClaim(claimForm)" #claimForm="ngForm">
+                <fieldset>
+                    <div class="form-group">
+                        <label class="col-lg-1 control-label" for="userNameId">Policy No</label>
+                        <div class="col-lg-2">
+                            <input class="form-control" id="txtPolicyNumber" type="text" placeholder="Policy Number" [(ngModel)]="search.policyNumber"  name="policyNumber" #policyNumberVar="ngModel" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-lg-1 control-label" for="SLNumber">VI/Sr. No</label>
+                        <div class="col-lg-2">
+                            <input class="form-control" id="txtSlNumber" type="text" placeholder="Sl Number" required [(ngModel)]="search.SlNumber"
+                                   name="slNumber" #passwordVar="ngModel" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <!--[ngClass]="{'has-error': (slNumberVar.touched ||
+                                              passwordVar.dirty) &&
+                                              !passwordVar.valid }">-->
+                        <label class="col-lg-1 control-label" for="clientRefNo">Client Ref No</label>
+                        <div class="col-lg-2">
+                            <input class="form-control" id="txtClientRefNo" type="text" placeholder="Client Ref No" required [(ngModel)]="search.clientRefNo" name="clientRefNo" #passwordVar="ngModel" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-4 col-lg-offset-1">
+                            <span>
+                                <button class="btn btn-success" type="submit" style="width:80px;margin-right:10px">Search</button>
+                            </span>
+                            <span [ngClass]="{'hidden': !showClaimByPolicyNum }">
+                                <a class="btn btn-success" (click)="newClaimForm()">New Claim</a>
+                            </span>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+            <input type="hidden" id="hdnPolicies" value="{{policies}}" />
+            <!--<div class="has-error" *ngIf="errorMessage">{{errorMessage}}</div>-->
+            <div [ngClass]="{'hidden': !showPolicies }" class="col-lg-12">
+                <input type="hidden" id="hdnPolicyNum" [(ngModel)]="hdnPolicyNum" />
+                <input type="button" class="hide_column" id="btnClaimByPolicyNo" (click)="GetClaimByPolicyNum()" />
+                <div class="table-responsive col-lg-12">
+                    <table id="tblPolicy" class="table  table-bordered table-responsive  jambo_table table-striped">
+                        <thead>
+                            <tr>
+                                <th>View</th>
+                                <th>Policy#</th>
+                                <th>Serial#</th>
+                                <th>Invoice#</th>
+                                <th>Policy Type</th>
+                                <th>Starts On</th>
+                                <th>Expires On</th>
+                                <th>Dealer</th>
+                                <th>Customer</th>
+                                <th>Make</th>
+                                <th>Model</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+
+            <div [ngClass]="{'hidden': !showClaimByPolicyNum }" class="col-lg-12">
+                <div class="table-responsive col-lg-12">
+                    <table id="tblClaimByPolicyNum" class="table  table-bordered table-responsive  jambo_table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Action</th>
+                                <th>Claim#</th>
+                                <th>Claim Received Date</th>
+                                <th>Workshop Name</th>
+                                <th>Dealer Name</th>
+                                <th>Sub Group Name</th>
+                                <th>Make</th>
+                                <th>Model</th>
+                                <th>Fault Name</th>
+                                <th>Last Service</th>
+                                <th>Requested Amount</th>
+                                <th>Parts Cost</th>
+                                <th>Authorised Amount</th>
+                                <th>Paid Amount</th>
+                                <th>Payee Name</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" [ngClass]="{'hidden': newClaim == false }">
+            <form class="form-horizontal" (ngSubmit)="addClaim(addClaimForm)" #addClaimForm="ngForm">
+                <!--policy information-->
+                <fieldset>
+                    <legend>Policy Information</legend>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="col-md-3 control-label" for="userNameId">Policy No</label>
+                                <div class="col-md-9">
+                                    <input disabled class="form-control" id="txtPolicyNumber" type="text" placeholder="Policy Number" [(ngModel)]="policy.PolicyNo" value="{{policy.PolicyNo}}" name="policyNumber"
+                                           #policyNumberVar="ngModel" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label" for="dealerName">Dealer Name</label>
+                                <div class="col-md-9">
+                                    <input disabled class="form-control" id="txtDealerName" type="text" placeholder="Dealer Name" [(ngModel)]="policy.DealerName" name="dealerName" value="{{policy.DealerName}}"
+                                           #dealerNameVar="ngModel" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label" for="userNameId">Make</label>
+                                <div class="col-md-9">
+                                    <input disabled class="form-control" id="txtMake" type="text" placeholder="Make" [(ngModel)]="policy.make" name="Make" #makeVar="ngModel" value="{{policy.Make}}" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label" for="chassisNo">VI/Chassis No:</label>
+                                <div class="col-md-9">
+                                    <input disabled class="form-control" id="txtChassisNo" type="text" placeholder="VI/Chassis No" [(ngModel)]="policy.VINo" name="chassisNo" value="{{policy.VINo}}"
+                                           #chassisNoVar="ngModel" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label" for="extendedWarrantyStartDate">Extended Warranty Start Date</label>
+                                <div class="col-md-9">
+                                    <input disabled class="form-control" id="txtExtendedWarrantyStartDate" type="text" placeholder="Extended Warranty Start Date" [(ngModel)]="policy.PolicyStartDate"  value="{{policy.PolicyStartDate}}" name="extendedWarrantyStartDate" #extendedWarrantyStartDateVar="ngModel" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label" for="userNameId">Total Authorized Claims</label>
+                                <div class="col-md-9">
+                                    <input disabled class="form-control" id="txtTotalAuthorizedClaims" type="text" placeholder="Total Authorized Claims" [(ngModel)]="policy.ClaimCount"  value="{{policy.ClaimCount}}" name="totalAuthorizedClaims"
+                                           #totalAuthorizedClaimsVar="ngModel" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="col-md-3 control-label" for="policyType">Policy Type </label>
+                                <div class="col-md-9">
+                                    <input disabled class="form-control" id="txtPolicyType" type="text" placeholder="Policy Type" [(ngModel)]="policy.PolicyNo" name="policyType" value="{{policy.PolicyNo}}" #policyTypeVar="ngModel" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label" for="dealerName">Customer Name</label>
+                                <div class="col-md-9">
+                                    <input disabled class="form-control" id="txtCustomerName" type="text" placeholder="Customer Name" [(ngModel)]="policy.CustomerName" name="customerName" value="{{policy.CustomerName}}" #customerNameVar="ngModel" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label" for="model">Model </label>
+                                <div class="col-md-9">
+                                    <input disabled class="form-control" id="txtModel " type="text" placeholder="Model" [(ngModel)]="policy.Model" name="model" value="{{policy.Model}}"
+                                           #modelVar="ngModel" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label" for="extendedWarrantyExpiryDate">Extended Warranty Expiry Date:</label>
+                                <div class="col-md-9">
+                                    <input disabled class="form-control" id="txtExtendedWarrantyExpiryDate" type="text" placeholder="Extended Warranty Expiry Date" [(ngModel)]="policy.PolicyExpiryDate" name="extendedWarrantyExpiryDate"  value="{{policy.PolicyExpiryDate}}" #extendedWarrantyExpiryDateVar="ngModel" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label" for="limitPerClaim">Limit Per Claim</label>
+                                <div class="col-md-9">
+                                    <input disabled class="form-control" id="txtlimitPerClaim" type="text" placeholder="Limit Per Claim" [(ngModel)]="policy.TotalClaimAmountLC" name="limitPerClaim"
+                                            value="{{policy.TotalClaimAmountLC}}" #limitPerClaimVar="ngModel" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </fieldset>
+                <!--claim information-->
+                <fieldset>
+                    <legend> Claim Information</legend>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group"
+                                [ngClass]="{'has-error': (claimNumberVar.touched || claimNumberVar.dirty) && !claimNumberVar.valid }">
+                                <label class="col-md-3 control-label" for="claimNumber">Claim No</label>
+                                <div class="col-md-9">
+                                    <input class="form-control" id="txtClaimNum" type="text" placeholder="Claim Number" [(ngModel)]="claim.ClaimNum" name="claimNumber"
+                                           #claimNumberVar="ngModel" />
+                                    <!--<span class="help-block" *ngIf="(userNameVar.touched || userNameVar.dirty) && userNameVar.errors">
+                                <span *ngIf="userNameVar.errors.required">User name is required. </span>
+                            </span>-->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group"
+                                [ngClass]="{'has-error': (dateOfFailureVar.touched || dateOfFailureVar.dirty) && !dateOfFailureVar.valid }">
+                                <label class="col-md-3 control-label" for="dateOfFailure">Date Of Failure</label>
+                                <div class="col-md-9">
+                                    <input class="form-control" id="txtDateOfFailure" type="date" placeholder="Date Of Failure" [(ngModel)]="claim.dateOfFailure" name="dateOfFailure"
+                                           #dateOfFailureVar="ngModel" />
+                                    <!--<span class="help-block" *ngIf="(userNameVar.touched || userNameVar.dirty) && userNameVar.errors">
+                                <span *ngIf="userNameVar.errors.required">User name is required. </span>
+                            </span>-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group"
+                                 [ngClass]="{'has-error': (selectedBranchCodeVar.touched ||
+                                               selectedBranchCodeVar.dirty) &&
+                                               !selectedBranchCodeVar.valid }">
+                                <label class="col-lg-3 control-label">Claim Branch : </label>
+                                <div class="col-lg-9">
+                                    <select class="form-control" name="claimBranch" #selectedBranchCodeVar="ngModel" [(ngModel)]="claim.branchCode" required>
+                                        <option selected="selected" value="null">Select Branch</option>
+                                        <option *ngFor="let b of claimDrpData.claimBranches" [ngValue]="b.Code">
+                                    {{b.Value}}
+                                </option>
+                                    </select>
+                                    <!--<span class="help-block" *ngIf="(selectedBranchCodeVar.touched ||
+                                                         selectedBranchCodeVar.dirty) &&
+                                                         selectedBranchCodeVar.errors">
+                                        <span *ngIf="selectedBranchCodeVar.errors.required">
+                                            Branch is required.
+                                        </span>
+                                    </span>-->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group"
+                                [ngClass]="{'has-error': (jobCardNoVar.touched || jobCardNoVar.dirty) && !jobCardNoVar.valid }">
+                                <label class="col-md-3 control-label" for="jobCardNo">Job Card No</label>
+                                <div class="col-md-9">
+                                    <input class="form-control" id="txtJobCardNumber" type="text" placeholder="Job Card Number" required [(ngModel)]="claim.jobCardNo" name="jobCardNo"
+                                           #jobCardNoVar="ngModel" />
+                                    <!--<span class="help-block" *ngIf="(passwordVar.touched || passwordVar.dirty) && passwordVar.errors">
+                                <span *ngIf="passwordVar.errors.required">Password is required.</span>
+                            </span>-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group"
+                                 [ngClass]="{'has-error': (selectedWorkshopCodeVar.touched ||
+                                               selectedWorkshopCodeVar.dirty) &&
+                                               !selectedWorkshopCodeVar.valid }">
+                                <label class="col-lg-3 control-label">Workshop : </label>
+                                <div class="col-lg-9">
+                                    <select class="form-control" name="workshop" #selectedWorkshopCodeVar="ngModel" [(ngModel)]="claim.workshopCode" required>
+                                        <option selected="selected" value="null">Select Workshop</option>
+                                        <option *ngFor="let w of claimDrpData.workshops" [ngValue]="w.WorkshopCode">
+                                    {{w.WorkshopName}}
+                                </option>
+                                    </select>
+                                    <!--<span class="help-block" *ngIf="(selectedWorkshopCodeVar.touched ||
+                                                         selectedWorkshopCodeVar.dirty) &&
+                                                         selectedWorkshopCodeVar.errors">
+                                        <span *ngIf="selectedWorkshopCodeVar.errors.required">
+                                            Workshop is required.
+                                        </span>
+                                    </span>-->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="col-md-3 control-label" for="mfgAssistance">Mfg Assistance</label>
+                                <div class="col-md-9">
+                                    <input class="form-control" id="txtMfgAssistance" style="width: 30px;" type="checkbox" placeholder="Mfg Assistance" [(ngModel)]="claim.mfgAssistance" name="mfgAssistance"
+                                           #mfgAssistanceVar="ngModel" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <!--[ngClass]="{'has-error': (slNumberVar.touched || passwordVar.dirty) && !passwordVar.valid }">-->
+                                <label class="col-md-3 control-label" for="contactPerson">Contact Person</label>
+                                <div class="col-md-9">
+                                    <input class="form-control" id="txtContactPerson" type="text" placeholder="Contact Person" required [(ngModel)]="claim.contactPerson" name="contactPerson" #contactPersonVar="ngModel" />
+                                    <!--<span class="help-block" *ngIf="(passwordVar.touched || passwordVar.dirty) && passwordVar.errors">
+                                <span *ngIf="passwordVar.errors.required">Password is required.</span>
+                            </span>-->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <!--[ngClass]="{'has-error': (slNumberVar.touched || passwordVar.dirty) && !passwordVar.valid }">-->
+                                <label class="col-md-3 control-label" for="contactPhone">Contact Phone</label>
+                                <div class="col-md-9">
+                                    <input class="form-control" id="txtContactPhone" type="text" placeholder="Contact Phone" required [(ngModel)]="claim.contactPhone" name="contactPhone"
+                                           #contactPhoneVar="ngModel" />
+                                    <!--<span class="help-block" *ngIf="(passwordVar.touched || passwordVar.dirty) && passwordVar.errors">
+                                <span *ngIf="passwordVar.errors.required">Password is required.</span>
+                            </span>-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </fieldset>
+                <!--claim fault-->
+                <fieldset>
+                    <legend>Claim Fault</legend>
+                    <div class="row">
+                        <div class="col-lg-2">
+                            <div class="form-group"
+                                 [ngClass]="{'has-error': (selectedCategoryCodeVar.touched ||  selectedCategoryCodeVar.dirty) && !selectedCategoryCodeVar.valid }">
+                                <label class="col-lg-12">Category : </label>
+                                <div class="col-lg-12">
+                                    <select class="form-control" name="partCategory" #selectedCategoryCodeVar="ngModel" (change)="setPartsFilter($event.target.value)" [(ngModel)]="claimFault.partCategory">
+                                        <option selected="selected" value="null">Select Category</option>
+                                        <option *ngFor="let pc of claimDrpData.partsCategories" value="{{pc.PartsCategoryCode}}">
+                                            {{pc.PartsCategoryName}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2">
+                            <div class="form-group"
+                                 [ngClass]="{'has-error': (selectedPartCodeVar.touched || selectedPartCodeVar.dirty) && !selectedPartCodeVar.valid }">
+                                <label class="col-lg-12">Part : </label>
+                                <div class="col-lg-12">
+                                    <select class="form-control" name="part" #selectedPartCodeVar="ngModel" [(ngModel)]="claimFault.partCode" required>
+                                        <option selected="selected" value="null">Select Part</option>
+                                        <option *ngFor="let p of filteredParts" value={{p.PartCode}}>
+                                    {{p.PartName}}
+                                </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2">
+                            <div class="form-group"
+                                 [ngClass]="{'has-error': (selectedFaultCodeVar.touched ||  selectedFaultCodeVar.dirty) && !selectedFaultCodeVar.valid }">
+                                <label class="col-lg-12">Fault : </label>
+                                <div class="col-lg-12">
+                                    <select class="form-control" name="fault" #selectedFaultCodeVar="ngModel" [(ngModel)]="claimFault.faultCode" required>
+                                        <option selected="selected" value="null">Select Fault</option>
+                                        <option *ngFor="let f of claimDrpData.faults" value={{f.FaultCode}}>
+                                    {{f.FaultName}}
+                                </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2">
+                            <div class="form-group">
+                                <label class="col-lg-12">Part Cost : </label>
+                                <div class="col-lg-12">
+                                    <input class="form-control" id="txtPartCost" type="text" placeholder="Part Cost" [(ngModel)]="claimFault.finalCost" name="finalCost" #partCostVar="ngModel" value="0" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2">
+                            <div class="form-group">
+                                <label class="col-lg-12">Mfg. Disc</label>
+                                <div class="col-lg-12">
+                                    <input class="form-control" id="txtMfgDisc" type="text" placeholder="Mfg Disc" [(ngModel)]="claimFault.mfgDisc" name="mfgDisc" #mfgDiscVar="ngModel" value="0" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2">
+                            <div class="form-group">
+                                <label class="col-lg-12">Rep. Disc : </label>
+                                <div class="col-lg-12">
+                                    <input class="form-control" id="txtRepDisc" type="text" placeholder="Rep Disc" [(ngModel)]="claimFault.repDisc" name="repDisc" #partCostVar="ngModel" value="0" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-2">
+                            <div class="form-group">
+                                <label class="col-lg-12">Labour Cost : </label>
+                                <div class="col-lg-12">
+                                    <input class="form-control" id="txtLabourCost" type="text" placeholder="Labour Cost" [(ngModel)]="claimFault.laborCost" name="laborCost" #labourCostVar="ngModel" value="0" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2">
+                            <div class="form-group">
+                                <label class="col-lg-12">Lab Disc : </label>
+                                <div class="col-lg-12">
+                                    <input class="form-control" id="txtLabDisc" type="text" placeholder="Lab Disc" [(ngModel)]="claimFault.labDisc" name="labDisc" #labDiscVar="ngModel" value="0" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2">
+                            <div class="form-group">
+                                <label class="col-lg-12">Total : </label>
+                                <div class="col-lg-12">
+                                    <input class="form-control" id="txtTotal" type="text" placeholder="Total" [(ngModel)]="claimFault.total" name="total" #totalVar="ngModel" value="0" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="col-lg-12">Fault Remarks : </label>
+                                <div class="col-lg-8">
+                                    <textarea class="form-control" id="txtFaultRemarks" placeholder="fault Remarks" [(ngModel)]="claimFault.remarks" name="remarks"></textarea>
+                                </div>
+                                <div class="col-lg-4">
+                                    <span>
+                                        <a class="btn btn-success" (click)="addClaimFault(addClaimForm)">Add</a>
+                                    </span>
+                                    <span [ngClass]="{'hidden': !isEditClaim }">
+                                        <a class="btn btn-primary" (click)="updateClaimFault(addClaimForm)">Update</a>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </fieldset>
+                <div class="row"  [ngClass]="{'hidden': claimFaults.length == 0 }">
+                    <div class="col-lg-12 table-responsive">
+                        <table class="tbl-claimfault table  table-bordered table-responsive  jambo_table table-striped">
+                            <tr>
+                                <th>Action</th>
+                                <th>#</th>
+                                <th>Category</th>
+                                <th>Part</th>
+                                <th>Fault</th>
+                                <th>Part Cost</th>
+                                <th>Mfg. Disc</th>
+                                <th>Rep. Disc</th>
+                                <th>Labour Cost</th>
+                                <th>Lab. Disc</th>
+                                <th>Total</th>
+                                <th>Remarks</th>
+                            </tr>
+                            <tbody>
+                                <tr *ngFor="let cf of claimFaults; let i = index" (click)="editClaimFault(i)">
+                                    <td>
+                                        <span>
+                                             <a class="btn btn-primary" (click)="editClaimFault(i)">Edit</a>
+                                        </span>
+                                        <span>
+                                            <a class="btn btn-danger" (click)="deleteClaimFault(i)">Delete</a>
+                                        </span>
+                                    </td>
+                                    <td>{{i + 1}}</td>
+                                    <td class="hidden">{{cf.PartsCategoryCode}}</td>
+                                    <td>{{cf.PartCategoryName}}</td>
+                                    <td class="hidden">{{cf.PartCode}}</td>
+                                    <td>{{cf.PartName}}</td>
+                                    <td class="hidden">{{cf.FaultCode}}</td>
+                                    <td>{{cf.FaultName}}</td>
+                                    <td>{{cf.FinalCost}}</td>
+                                    <td>{{cf.MfgDisPer}}</td>
+                                    <td>{{cf.RepairerDisPer}}</td>
+                                    <td>{{cf.LaborCost}}</td>
+                                    <td>{{cf.LabDisc}}</td>
+                                    <td>{{cf.Total}}</td>
+                                    <td>{{cf.FaultRemarks}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!--uploaded document-->
+                <fieldset>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <fieldset>
+                                <legend>Uploaded Documents:</legend>
+                                <div class="form-group"
+                                    [ngClass]="{'has-error': (documentVar.touched || documentVar.dirty) && !documentVar.valid }">
+                                    <label class="col-md-3 control-label" for="document">Select File:</label>
+                                    <div class="col-md-2">
+                                        <input class="form-control" id="txtDocument" type="file" placeholder="Document" [(ngModel)]="claim.document" name="document"
+                                               #documentVar="ngModel" (change)="addFiles($event.target.files)" multiple />
+                                    </div>
+                                    <span class="col-md-2" [ngClass]="{'hidden': files.length == 0}">
+                                        <a class="btn btn-danger" (click)="clearFiles()">Clear</a>
+                                    </span>
+                                    <div class="col-lg-12 documents" [ngClass]="{'hidden': files.length == 0 }">
+                                        <h2>Added Documents</h2>
+                                        <ol>
+                                            <li *ngFor="let file of files">
+                                               <a>{{file.name}}</a> 
+                                            </li>
+                                        </ol>
+                                    </div>
+                                   
+                                </div>
+                            </fieldset>
+                        </div>
+                        <div class="col-lg-6">
+                            <fieldset>
+                                <legend>Service/Other Details:</legend>
+                                <div class="form-group">
+                                    <!--[ngClass]="{'has-error': (userNameVar.touched || userNameVar.dirty) && !userNameVar.valid }"-->
+                                    <label class="col-md-3 control-label" for="lastServiceDate">Last Service Date</label>
+                                    <div class="col-md-9">
+                                        <input class="form-control" id="txtLastServiceDate" type="date" placeholder="Last Service Date" [(ngModel)]="claim.lastServiceDate" name="lastServiceDate" #lastServiceDateVar="ngModel" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <!--[ngClass]="{'has-error': (userNameVar.touched || userNameVar.dirty) && !userNameVar.valid }"-->
+                                    <label class="col-md-3 control-label" for="lastServiceMileage">Last Service Mileage</label>
+                                    <div class="col-md-9">
+                                        <input class="form-control" id="txtLastServiceMileage" type="text" placeholder="Last Service Mileage" [(ngModel)]="claim.lastServiceMileage" name="lastServiceMileage" #lastServiceDateVar="ngModel" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <!--[ngClass]="{'has-error': (userNameVar.touched || userNameVar.dirty) && !userNameVar.valid }"-->
+                                    <label class="col-md-3 control-label" for="serviceProofDetails">Service Proof Details</label>
+                                    <div class="col-md-9">
+                                        <textarea class="form-control" id="txtServiceProofDetails" type="text" placeholder="Service Proof Details" [(ngModel)]="claim.serviceProofDetails" name="serviceProofDetails" #serviceProofDetailsVar="ngModel"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <!--[ngClass]="{'has-error': (userNameVar.touched || userNameVar.dirty) && !userNameVar.valid }"-->
+                                    <label class="col-md-3 control-label" for="breakdownMileage">Breakdown Mileage</label>
+                                    <div class="col-md-9">
+                                        <input class="form-control" id="txtBreakdownMileage" type="text" placeholder="Breakdown Mileage" [(ngModel)]="claim.breakdownMileage" name="breakdownMileage" #breakdownMileageVar="ngModel" />
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <!--[ngClass]="{'has-error': (userNameVar.touched || userNameVar.dirty) && !userNameVar.valid }"-->
+                                <label class="col-md-3 control-label" for="requestedAmount">Requested Amount</label>
+                                <div class="col-md-9">
+                                    <input class="form-control" id="txtRequestedAmount" type="text" placeholder="Requested Amount" [(ngModel)]="claim.requestedAmount" name="requestedAmount"
+                                           #requestedAmountVar="ngModel" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <!--[ngClass]="{'has-error': (userNameVar.touched || userNameVar.dirty) && !userNameVar.valid }"-->
+                                <label class="col-md-3 control-label" for="requestedAmount">Total Amount</label>
+                                <div class="col-md-9">
+                                    <input class="form-control" id="txtTotalAmount" type="text" placeholder="Total Amount" [(ngModel)]="claim.totalAmount" name="totalAmount"
+                                           #totalAmountVar="ngModel" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <!--[ngClass]="{'has-error': (userNameVar.touched || userNameVar.dirty) && !userNameVar.valid }"-->
+                                <label class="col-md-3 control-label" for="enteredOn">Entered On</label>
+                                <div class="col-md-9">
+                                    <input class="form-control" id="txtEnteredOn" type="date" placeholder="Entered On" [ngModel]="enteredOn | date:'yyyy-MM-dd'" (ngModelChange)="claim.enteredOn = $event" [value]="claim.enteredOn | date:'yyyy-MM-dd'" name="enteredOn" #enteredOnVar="ngModel" disabled />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <!--[ngClass]="{'has-error': (userNameVar.touched || userNameVar.dirty) && !userNameVar.valid }"-->
+                                <label class="col-md-3 control-label" for="authorizedAmount">Authorized Amount</label>
+                                <div class="col-md-9">
+                                    <input class="form-control" id="txtAuthorizedAmount" type="text" placeholder="authorized Amount" [(ngModel)]="claim.authorizedAmount" name="authorizedAmount"
+                                           #authorizedAmountVar="ngModel" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <!--[ngClass]="{'has-error': (userNameVar.touched || userNameVar.dirty) && !userNameVar.valid }"-->
+                                <label class="col-md-3 control-label" for="gwAuthNo">GW Auth. No</label>
+                                <div class="col-md-9">
+                                    <input class="form-control" id="txtGwAuthNo" type="text" placeholder="GW Auth. No" [(ngModel)]="claim.gwAuthNo" name="gwAuthNo"
+                                           #gwAuthNoVar="ngModel" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <!--[ngClass]="{'has-error': (userNameVar.touched || userNameVar.dirty) && !userNameVar.valid }"-->
+                                <label class="col-md-3 control-label" for="authorizedBy">Authorized By</label>
+                                <div class="col-md-9">
+                                    <input class="form-control" id="txtAuthorizedBy" type="text" placeholder="Authorized By" [(ngModel)]="claim.authorizedBy" name="authorizedBy"
+                                           #authorizedByVar="ngModel" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <!--[ngClass]="{'has-error': (userNameVar.touched || userNameVar.dirty) && !userNameVar.valid }"-->
+                                <label class="col-md-3 control-label" for="deductable">Deductable</label>
+                                <div class="col-md-9">
+                                    <input class="form-control" id="txtDeductable" type="text" placeholder="Deductable" [(ngModel)]="claim.deductable" name="deductable"
+                                           #deductableVar="ngModel" />
+                                </div>
+                            </div>
+                            <div class="form-group"
+                                 [ngClass]="{'has-error': (selectedBranchCodeVar.touched ||
+                                               selectedBranchCodeVar.dirty) &&
+                                               !selectedBranchCodeVar.valid }">
+                                <label class="col-lg-3 control-label">Status : </label>
+                                <div class="col-lg-9">
+                                    <select class="form-control" name="status" #selectedBranchCodeVar="ngModel" [(ngModel)]="claim.status" required disabled>
+                                        <option value="">Select Status</option>
+                                        <option value="1">Authorised</option>
+                                        <option value="3">Rejected</option>
+                                        <option selected="selected" value="7">On Hold</option>
+
+                                    </select>
+                                    <span class="help-block" *ngIf="(selectedBranchCodeVar.touched ||
+                                                         selectedBranchCodeVar.dirty) &&
+                                                         selectedBranchCodeVar.errors">
+                                        <span *ngIf="selectedBranchCodeVar.errors.required">
+                                            Status is required.
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-lg-3 control-label">Remarks : </label>
+                                <div class="col-lg-9">
+                                    <textarea class="form-control" id="txtRemarks" placeholder="Remarks" [(ngModel)]="claim.remarks" name="claim.remarks" #remarksVar="ngModel"></textarea>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <!--[ngClass]="{'has-error': (userNameVar.touched || userNameVar.dirty) && !userNameVar.valid }"-->
+                                <label class="col-md-3 control-label" for="authorizedOn">Authorized On</label>
+                                <div class="col-md-9">
+                                    <input class="form-control" id="txtAuthorizedOn" type="date" placeholder="Authorized On" [(ngModel)]="claim.authorisedOn" name="authorisedOn"
+                                           #authorizedOnVar="ngModel" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+                <span>
+                    <input type="button" id="btnSubmit" class="btn btn-success" data-toggle="modal" data-target="#mdlAddClaim" value="Submit" />
+                </span>
+                <!-- Modal -->
+                <div id="mdlAddClaim" class="modal fade" role="dialog">
+                    <div class="modal-dialog">
+
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">Confirm Addition</h4>
+                            </div>
+                            <div class="modal-body">
+                                <p>Are you sure you want to add Claim</p>
+                            </div>
+                            <div class="modal-footer">
+                                <input type="submit" class="btn btn-success" value="Ok" />
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>

@@ -1,0 +1,123 @@
+﻿<div class="login-box-body claim-fields content-wrapper process-claim">
+    <div class="row no-padding">
+        <div class="col-lg-12"><h2>Sales Report</h2></div>
+    </div>
+    <form class="form-horizontal " novalidate #salesReportForm="ngForm">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="form-group" [ngClass]="{'has-error': (fromDateVar.touched || fromDateVar.dirty) && !fromDateVar.valid }">
+                    <label class="col-md-3 control-label" for="fromDate">From Date :</label>
+                    <div class="col-md-9">
+                        <input class="form-control" id="txtFromDate" type="date" placeholder="From Date" [(ngModel)]="report.FromDate" name="fromDate" value="{{report.FromDate}}" #fromDateVar="ngModel" max="{{report.ToDate}}" required />
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="form-group" [ngClass]="{'has-error': (toDateVar.touched || toDateVar.dirty) && !toDateVar.valid }">
+                    <label class="col-md-3 control-label" for="SoldDate">To Date :</label>
+                    <div class="col-md-9">
+                        <input class="form-control" id="txtToDate" min="{{report.FromDate}}" type="date" placeholder="To Date" [(ngModel)]="report.ToDate" name="toDate" value="{{report.ToDate}}" #toDateVar="ngModel" required />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="form-group" [ngClass]="{'has-error': (selectedDealerIDVar.touched || selectedDealerIDVar.dirty) && !selectedDealerIDVar.valid }">
+                    <label class="col-lg-3 control-label">Dealer : </label>
+                    <div class="col-lg-9">
+                        <select class="form-control" name="dealerID" #selectedDealerIDVar="ngModel" [(ngModel)]="report.DealerID">
+                            <option selected="selected" value="undefined">Select Dealer</option>
+                            <option *ngFor="let c of dropdowns.dealers" value={{c.DealerCode}}>
+                                {{c.DealerName}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="form-group"
+                     [ngClass]="{'has-error': (selectedBranchCodeVar.touched || selectedBranchCodeVar.dirty) && !selectedBranchCodeVar.valid }">
+                    <label class="col-lg-3 control-label">Branch : </label>
+                    <div class="col-lg-9">
+                        <select class="form-control" name="branchID" #selectedBranchCodeVar="ngModel" [(ngModel)]="report.BranchID" required>
+                            <option selected="selected" value="undefined">Select Branch</option>
+                            <option *ngFor="let b of filterDealer()" [ngValue]="b.DealerBranchID">
+                                {{b.DealerBranchName}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="form-group"
+                     [ngClass]="{'has-error': (selectedProductGroupVar.touched || selectedProductGroupVar.dirty) && !selectedProductGroupVar.valid }">
+                    <label class="col-lg-3 text-right">Product Group : </label>
+                    <div class="col-lg-9">
+                        <select class="form-control" name="productGroupID" #selectedProductGroupVar="ngModel" [(ngModel)]="report.ProductGroupId" (change)="onProductGroupChange();">
+                            <option selected="selected" value="undefined">Select Product Group</option>
+                            <option *ngFor="let c of dropdowns.productGroups" value={{c.ProductGroupCode}}>
+                                {{c.ProductGroupName}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="form-group"
+                     [ngClass]="{'has-error': (selectedProductSubGroupVar.touched || selectedProductSubGroupVar.dirty) && !selectedProductSubGroupVar.valid }">
+                    <label class="col-lg-3 text-right">Product Sub Group : </label>
+                    <div class="col-lg-9">
+                        <select class="form-control" name="productSubGroupID" #selectedProductSubGroupVar="ngModel" [(ngModel)]="report.ProductSubGroupId">
+                            <option selected="selected" value="undefined">Select Product Sub Group</option>
+                            <option *ngFor="let c of productSubGroups " value={{c.SubGroupCode}}>
+                                {{c.SubGroupName}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="form-group"
+                     [ngClass]="{'has-error': (selectedUserIDVar.touched || selectedUserIDVar.dirty) && !selectedUserIDVar.valid }">
+                    <label class="col-lg-3 control-label">User : </label>
+                    <div class="col-lg-9">
+                        <select class="form-control" name="userID" #selectedUserIDVar="ngModel" [(ngModel)]="report.UserID">
+                            <option selected="selected" value="undefined">Select User</option>
+                            <option *ngFor="let b of dropdowns.users" value={{b.UserID}}>
+                                {{b.UserName}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="form-group"
+                     [ngClass]="{'has-error': (selectedIsExcelVar.touched || selectedIsExcelVar.dirty) && !selectedIsExcelVar.valid }">
+                    <label class="col-lg-3 control-label">Format : </label>
+                    <div class="col-lg-9">
+                        <select class="form-control" name="isExcel" #selectedIsExcelVar="ngModel" [(ngModel)]="report.IsExcel">
+                            <option selected="selected" value="undefined" >Select Format</option>
+                            <option value="false">PDF</option>
+                            <option value="true">Excel</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="col-lg-12  col-lg-push-3">
+                    <button class="btn btn-success" [disabled]="report.FromDate == undefined || this.report.ToDate == undefined" type="button" (click)="showReport()">Generate Report</button>
+                    <button class="btn btn-danger" type="button" (click)="report = {}">Clear</button>
+                </div>
+              
+            </div>
+        </div>
+    </form>
+</div>

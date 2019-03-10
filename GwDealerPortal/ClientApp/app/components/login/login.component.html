@@ -1,0 +1,137 @@
+<div class="hold-transition login-page">
+    <div class="login-box">
+        <div class="login-logo">
+            <a href="javascript:void(0);"><b>Service</b> of Assistance</a>
+        </div>
+        <!-- /.login-logo -->
+        <div class="login-box-body">
+            <p class="login-box-msg">Sign in to start your session</p>
+            <form class="form-horizontal" novalidate (ngSubmit)="login(loginForm)" #loginForm="ngForm">
+                <fieldset>
+                    <div class="form-group"
+                         [ngClass]="{'has-error': (userNameVar.touched || userNameVar.dirty) && !userNameVar.valid }">
+                        <label class="col-md-4" for="userNameId">User Name</label>
+                        <div class="col-md-8">
+                            <input class="form-control" id="userNameId"
+                                   type="text"
+                                   placeholder="User Name (required)"
+                                   required
+                                   (ngModel)="userName"
+                                   name="userName"
+                                   #userNameVar="ngModel" />
+                            <span class="help-block" *ngIf="(userNameVar.touched ||
+                                                         userNameVar.dirty) &&
+                                                         userNameVar.errors">
+                                <span *ngIf="userNameVar.errors.required">
+                                    User name is required.
+                                </span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-group"
+                         [ngClass]="{'has-error': (passwordVar.touched ||
+                               passwordVar.dirty) &&
+                               !passwordVar.valid }">
+                        <label class="col-md-4 " for="passwordId">Password</label>
+                        <div class="col-md-8">
+                            <input class="form-control"
+                                   id="passwordId"
+                                   type="password"
+                                   placeholder="Password (required)"
+                                   required
+                                   (ngModel)="password"
+                                   name="password"
+                                   #passwordVar="ngModel" />
+                            <span class="help-block" *ngIf="(passwordVar.touched ||
+                                         passwordVar.dirty) &&
+                                         passwordVar.errors">
+                                <span *ngIf="passwordVar.errors.required">
+                                    Password is required.
+                                </span>
+                            </span>
+                        </div>
+                    </div>
+                    <!--  <div class="form-group hidden"
+           [ngClass]="{'has-error': (selectedProgramCodeVar.touched ||
+                                 selectedProgramCodeVar.dirty) &&
+                                 !selectedProgramCodeVar.valid }">
+          <label class="col-lg-4">Program : </label>
+          <div class="col-lg-8">
+              <select class="form-control" id="drpProgram" name="programCode" #selectedProgramCodeVar="ngModel" (ngModel)="programCode" required>
+                  <option selected="selected" value="null">Select Program</option>
+                  <option *ngFor="let p of programs" value={{p.programCode}} >
+                      {{p.programName}}
+                  </option>
+              </select>
+              <span class="help-block" *ngIf="(selectedProgramCodeVar.touched ||
+                                           selectedProgramCodeVar.dirty) &&
+                                           selectedProgramCodeVar.errors">
+                  <span *ngIf="selectedProgramCodeVar.errors.required">
+                      Program is required.
+                  </span>
+              </span>
+          </div>
+      </div>
+      <div class="form-group hidden"
+           [ngClass]="{'has-error': (selectedConfigIdVar.touched ||
+                                 selectedConfigIdVar.dirty) &&
+                                 !selectedConfigIdVar.valid }">
+          <label class="col-lg-4">Location : </label>
+          <div class="col-lg-8">
+              <select class="form-control" id="drpLocation" name="configId" #selectedConfigIdVar="ngModel" (ngModel)="configId" required>
+                  <option selected="selected" value="null">Select Location</option>
+                  <option *ngFor="let p of locations" value={{p.locationCode}}>
+                      {{p.locationName}}
+                  </option>
+              </select>
+              <span class="help-block" *ngIf="(selectedConfigIdVar.touched ||
+                                           selectedConfigIdVar.dirty) &&
+                                           selectedConfigIdVar.errors">
+                  <span *ngIf="selectedConfigIdVar.errors.required">
+                      Location is required.
+                  </span>
+              </span>
+          </div>
+      </div>-->
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <span>
+                                <button class="btn btn-success" type="submit"  style="width:80px;margin-right:10px" [disabled]="!loginForm.valid">
+                                    Log In
+                                </button>
+                            </span>
+                            <span>
+                                <a class="btn btn-default" [routerLink]="['/']"> Cancel</a>
+                            </span>
+                        </div>
+                        <div class="col-lg-12">
+                            <br />
+                            <a class="glyphicon glyphicon-link" [routerLink]="['/passwordreset']"> Reset Password</a>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+
+            <div class="has-error" *ngIf="errorMessage">{{errorMessage}}</div>
+        </div>
+
+    </div>
+    <!-- /.login-box-body -->
+    
+    <!-- /.login-box -->
+    <!-- jQuery 3 -->
+    <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap 3.3.7 -->
+    <script src="../../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- iCheck -->
+    <script src="../../plugins/iCheck/icheck.min.js"></script>
+    <script>
+  $(function () {
+    $('input').iCheck({
+      checkboxClass: 'icheckbox_square-blue',
+      radioClass: 'iradio_square-blue',
+      increaseArea: '20%' /* optional */
+    });
+  });
+    </script>
+</div>

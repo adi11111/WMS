@@ -1,0 +1,5 @@
+C:\Projects\GwDealerPortal\GwDealerPortal.Service
+--output-path=obj\Release\netcoreapp2.0\
+--application-name=GwDealerPortal.Service
+--content-root=C:\Projects\GwDealerPortal\GwDealerPortal.Service
+--file=

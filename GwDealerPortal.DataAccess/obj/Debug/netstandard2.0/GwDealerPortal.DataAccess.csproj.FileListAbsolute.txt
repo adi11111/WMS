@@ -1,0 +1,15 @@
+C:\Projects\GwDealerPortal\GwDealerPortal.DataAccess\bin\Debug\netstandard2.0\GwDealerPortal.DataAccess.dll.config
+C:\Projects\GwDealerPortal\GwDealerPortal.DataAccess\bin\Debug\netstandard2.0\GwDealerPortal.DataAccess.deps.json
+C:\Projects\GwDealerPortal\GwDealerPortal.DataAccess\bin\Debug\netstandard2.0\GwDealerPortal.DataAccess.dll
+C:\Projects\GwDealerPortal\GwDealerPortal.DataAccess\bin\Debug\netstandard2.0\GwDealerPortal.DataAccess.pdb
+C:\Projects\GwDealerPortal\GwDealerPortal.DataAccess\bin\Debug\netstandard2.0\Microsoft.IdentityModel.Protocols.dll
+C:\Projects\GwDealerPortal\GwDealerPortal.DataAccess\bin\Debug\netstandard2.0\Microsoft.IdentityModel.Protocols.xml
+C:\Projects\GwDealerPortal\GwDealerPortal.DataAccess\obj\Debug\netstandard2.0\GwDealerPortal.DataAccess.csproj.CoreCompileInputs.cache
+C:\Projects\GwDealerPortal\GwDealerPortal.DataAccess\obj\Debug\netstandard2.0\GwDealerPortal.DataAccess.AssemblyInfoInputs.cache
+C:\Projects\GwDealerPortal\GwDealerPortal.DataAccess\obj\Debug\netstandard2.0\GwDealerPortal.DataAccess.AssemblyInfo.cs
+C:\Projects\GwDealerPortal\GwDealerPortal.DataAccess\obj\Debug\netstandard2.0\GwDealerPortal.DataAccess.csproj.CopyComplete
+C:\Projects\GwDealerPortal\GwDealerPortal.DataAccess\obj\Debug\netstandard2.0\GwDealerPortal.DataAccess.dll
+C:\Projects\GwDealerPortal\GwDealerPortal.DataAccess\obj\Debug\netstandard2.0\GwDealerPortal.DataAccess.pdb
+C:\Projects\GwDealerPortal\GwDealerPortal.DataAccess\obj\Debug\netstandard2.0\GwDealerPortal.DataAccess.csprojAssemblyReference.cache
+C:\Projects\GwDealerPortal\GwDealerPortal.DataAccess\bin\Debug\netstandard2.0\Microsoft.AspNetCore.Hosting.Abstractions.dll
+C:\Projects\GwDealerPortal\GwDealerPortal.DataAccess\bin\Debug\netstandard2.0\Microsoft.AspNetCore.Hosting.Abstractions.xml
